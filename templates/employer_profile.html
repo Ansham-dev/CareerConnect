@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Company Profile - CareerConnect{% endblock %}
+{% block content %}
+<div class="container narrow">
+  <h1>Company Profile</h1>
+  <form method="post" class="card-form">
+    <label>Company Name <span class="required">*</span>
+      <input type="text" name="company_name" required value="{{ emp['company_name'] }}">
+    </label>
+    <label>Website
+      <input type="url" name="website" placeholder="https://example.com" value="{{ emp['website'] or '' }}">
+    </label>
+    <label>About the Company
+      <textarea name="description" rows="4">{{ emp['description'] or '' }}</textarea>
+    </label>
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+</div>
+{% endblock %}

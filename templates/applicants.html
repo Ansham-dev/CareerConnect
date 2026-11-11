@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Applicants - CareerConnect{% endblock %}
+{% block content %}
+<div class="container">
+  <a href="{{ url_for('employer_dashboard') }}" class="back-link">&larr; Back to dashboard</a>
+  <h1>Applicants: {{ job['title'] }}</h1>
+
+  {% if rows %}
+    <table class="data-table">
+      <thead>
+        <tr><th>Name</th><th>Email</th><th>Phone</th><th>Education</th><th>Skills</th><th>Applied On</th><th>Resume</th><th>Status</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        {% for r in rows %}
+          <tr>
+            <td>{{ r['name'] }}</td>
+            <td>{{ r['email'] }}</td>
+            <td>{{ r['phone'] or '-' }}</td>
+            <td>{{ r['education'] or '-' }}</td>
+            <td>{{ r['skills'] or '-' }}</td>
+            <td>{{ r['applied_on'] }}</td>
+            <td>
+              {% if r['resume_path'] %}
+                <a href="{{ url_for('resume_file', filename=r['resume_path']) }}" target="_blank">View</a>
+              {% else %}-{% endif %}
+            </td>
+            <td><span class="status status-{{ r['status']|lower }}">{{ r['status'] }}</span></td>
+            <td class="actions">
+              {% for s in STATUSES if s != r['status'] %}
+                <form method="post" action="{{ url_for('set_application_status', app_id=r['app_id']) }}" class="inline-form">
+                  <input type="hidden" name="status" value="{{ s }}">
+                  <button type="submit" class="link-btn {{ 'success' if s == 'Shortlisted' else 'danger' }}">{{ s }}</button>
+                </form>
+              {% endfor %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="empty">No applications yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

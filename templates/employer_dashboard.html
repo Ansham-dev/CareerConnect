@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Employer Dashboard - CareerConnect{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="dash-head">
+    <h1>Employer Dashboard</h1>
+    <div>
+      <a href="{{ url_for('employer_profile_edit') }}" class="btn btn-outline">Company Profile</a>
+      {% if approved %}<a href="{{ url_for('post_job') }}" class="btn btn-primary">+ Post New Job</a>{% endif %}
+    </div>
+  </div>
+
+  {% if not approved %}
+    <p class="alert alert-error">Your employer account is pending admin approval. You can browse and set up your company profile, but you cannot post jobs until approved.</p>
+  {% endif %}
+
+  <h2>My Job Postings ({{ jobs|length }})</h2>
+  {% if jobs %}
+    <table class="data-table">
+      <thead>
+        <tr><th>Title</th><th>Category</th><th>Location</th><th>Deadline</th><th>Applicants</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for job in jobs %}
+          <tr>
+            <td>{{ job['title'] }}</td>
+            <td>{{ job['category'] or '-' }}</td>
+            <td>{{ job['location'] or '-' }}</td>
+            <td>{{ job['last_date'] or '-' }}</td>
+            <td>{{ job['applicant_count'] }}</td>
+            <td class="actions">
+              <a href="{{ url_for('applicants', job_id=job['job_id']) }}">Applicants</a>
+              <a href="{{ url_for('edit_job', job_id=job['job_id']) }}">Edit</a>
+              <form method="post" action="{{ url_for('delete_job', job_id=job['job_id']) }}" class="inline-form confirm-form" data-confirm="Delete this job and all its applications?">
+                <button type="submit" class="link-btn danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="empty">You have not posted any jobs yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

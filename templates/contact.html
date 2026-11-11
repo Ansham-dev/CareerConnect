@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Contact - CareerConnect{% endblock %}
+{% block content %}
+<div class="container narrow">
+  <h1>Contact Us</h1>
+  <form method="post" class="card-form">
+    <label>Full Name <span class="required">*</span>
+      <input type="text" name="name" required>
+    </label>
+    <label>Email <span class="required">*</span>
+      <input type="email" name="email" required>
+    </label>
+    <label>Message <span class="required">*</span>
+      <textarea name="message" rows="5" required></textarea>
+    </label>
+    <button type="submit" class="btn btn-primary">Send Message</button>
+  </form>
+</div>
+{% endblock %}

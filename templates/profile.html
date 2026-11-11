@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}My Profile - CareerConnect{% endblock %}
+{% block content %}
+<div class="container narrow">
+  <h1>My Profile</h1>
+  <form method="post" enctype="multipart/form-data" class="card-form">
+    <label>Phone
+      <input type="text" name="phone" value="{{ profile['phone'] if profile else '' }}">
+    </label>
+    <label>Education
+      <textarea name="education" rows="2">{{ profile['education'] if profile else '' }}</textarea>
+    </label>
+    <label>Skills
+      <textarea name="skills" rows="2" placeholder="e.g. Python, HTML, CSS, Communication">{{ profile['skills'] if profile else '' }}</textarea>
+    </label>
+    {% if profile and profile['resume_path'] %}
+      <p class="current-file">Current resume: <a href="{{ url_for('resume_file', filename=profile['resume_path']) }}" target="_blank">View / Download</a></p>
+    {% endif %}
+    <label>{% if profile and profile['resume_path'] %}Replace{% else %}Upload{% endif %} Resume (PDF/DOC, max 2 MB)
+      <input type="file" name="resume" accept=".pdf,.doc,.docx">
+    </label>
+    <button type="submit" class="btn btn-primary">Save Profile</button>
+  </form>
+</div>
+{% endblock %}

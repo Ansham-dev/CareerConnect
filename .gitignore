@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+careerconnect.db
+uploads/
+.flask_session/

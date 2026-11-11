@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}Admin Panel - CareerConnect{% endblock %}
+{% block content %}
+<div class="container">
+  <h1>Admin Panel</h1>
+
+  <h2>Pending Employer Approvals ({{ pending|length }})</h2>
+  {% if pending %}
+    <table class="data-table">
+      <thead><tr><th>Name</th><th>Email</th><th>Company</th><th>Action</th></tr></thead>
+      <tbody>
+        {% for e in pending %}
+          <tr>
+            <td>{{ e['name'] }}</td>
+            <td>{{ e['email'] }}</td>
+            <td>{{ e['company_name'] }}</td>
+            <td class="actions">
+              <form method="post" action="{{ url_for('approve_employer', user_id=e['user_id']) }}" class="inline-form">
+                <button type="submit" class="link-btn success">Approve</button>
+              </form>
+              <form method="post" action="{{ url_for('delete_user', user_id=e['user_id']) }}" class="inline-form confirm-form" data-confirm="Reject and delete this employer?">
+                <button type="submit" class="link-btn danger">Reject</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="empty">No pending approvals.</p>
+  {% endif %}
+
+  <h2>Categories</h2>
+  <form method="post" action="{{ url_for('add_category') }}" class="inline-add">
+    <input type="text" name="cat_name" placeholder="New category name" required>
+    <button type="submit" class="btn btn-primary">Add Category</button>
+  </form>
+  {% if categories %}
+    <table class="data-table">
+      <thead><tr><th>Category</th><th>Jobs Using It</th><th>Action</th></tr></thead>
+      <tbody>
+        {% for c in categories %}
+          <tr>
+            <td>{{ c['cat_name'] }}</td>
+            <td>{{ c['job_count'] }}</td>
+            <td>
+              <form method="post" action="{{ url_for('delete_category', cat_id=c['cat_id']) }}" class="inline-form confirm-form" data-confirm="Delete this category?">
+                <button type="submit" class="link-btn danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+  <h2>All Job Postings ({{ jobs|length }})</h2>
+  {% if jobs %}
+    <table class="data-table">
+      <thead><tr><th>ID</th><th>Title</th><th>Company</th><th>Location</th><th>Deadline</th><th>Action</th></tr></thead>
+      <tbody>
+        {% for j in jobs %}
+          <tr>
+            <td>#{{ j['job_id'] }}</td>
+            <td>{{ j['title'] }}</td>
+            <td>{{ j['company_name'] }}</td>
+            <td>{{ j['location'] or '-' }}</td>
+            <td>{{ j['last_date'] or '-' }}</td>
+            <td>
+              <form method="post" action="{{ url_for('admin_delete_job', job_id=j['job_id']) }}" class="inline-form confirm-form" data-confirm="Remove this job posting?">
+                <button type="submit" class="link-btn danger">Remove</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="empty">No jobs posted.</p>
+  {% endif %}
+
+  <h2>Employers</h2>
+  {% if employers %}
+    <table class="data-table">
+      <thead><tr><th>Name</th><th>Email</th><th>Company</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for e in employers %}
+          <tr>
+            <td>{{ e['name'] }}</td>
+            <td>{{ e['email'] }}</td>
+            <td>{{ e['company_name'] }}</td>
+            <td><span class="status {{ 'status-shortlisted' if e['approved'] else 'status-rejected' }}">{{ 'Approved' if e['approved'] else 'Pending' }}</span></td>
+            <td class="actions">
+              {% if e['approved'] %}
+                <form method="post" action="{{ url_for('revoke_employer', user_id=e['user_id']) }}" class="inline-form">
+                  <button type="submit" class="link-btn danger">Revoke</button>
+                </form>
+              {% else %}
+                <form method="post" action="{{ url_for('approve_employer', user_id=e['user_id']) }}" class="inline-form">
+                  <button type="submit" class="link-btn success">Approve</button>
+                </form>
+              {% endif %}
+              <form method="post" action="{{ url_for('delete_user', user_id=e['user_id']) }}" class="inline-form confirm-form" data-confirm="Delete this employer and all their jobs?">
+                <button type="submit" class="link-btn danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+  <h2>Job Seekers</h2>
+  {% if seekers %}
+    <table class="data-table">
+      <thead><tr><th>Name</th><th>Email</th><th>Registered</th><th>Action</th></tr></thead>
+      <tbody>
+        {% for s in seekers %}
+          <tr>
+            <td>{{ s['name'] }}</td>
+            <td>{{ s['email'] }}</td>
+            <td>{{ s['user_id'] }}</td>
+            <td>
+              <form method="post" action="{{ url_for('delete_user', user_id=s['user_id']) }}" class="inline-form confirm-form" data-confirm="Delete this job seeker?">
+                <button type="submit" class="link-btn danger">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+
+  <h2>Contact Messages</h2>
+  {% if messages %}
+    <table class="data-table">
+      <thead><tr><th>Name</th><th>Email</th><th>Message</th><th>Date</th></tr></thead>
+      <tbody>
+        {% for m in messages %}
+          <tr>
+            <td>{{ m['name'] }}</td>
+            <td>{{ m['email'] }}</td>
+            <td>{{ m['message'] }}</td>
+            <td>{{ m['sent_on'] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="empty">No messages yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

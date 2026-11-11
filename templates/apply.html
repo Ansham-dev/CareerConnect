@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Apply - CareerConnect{% endblock %}
+{% block content %}
+<div class="container narrow">
+  <h1>Apply: {{ job['title'] }}</h1>
+  <p class="company">{{ job['company_name'] }}{% if job['location'] %} &middot; {{ job['location'] }}{% endif %}</p>
+
+  {% if profile and profile['resume_path'] %}
+    <p class="alert alert-success">Your saved resume will be used: <a href="{{ url_for('resume_file', filename=profile['resume_path']) }}" target="_blank">View resume</a></p>
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data" class="card-form">
+    {% if not profile or not profile['resume_path'] %}
+      <label>Upload Resume (PDF/DOC, max 2 MB) <span class="required">*</span>
+        <input type="file" name="resume" accept=".pdf,.doc,.docx" required>
+      </label>
+    {% else %}
+      <label>Replace Resume (optional, PDF/DOC, max 2 MB)
+        <input type="file" name="resume" accept=".pdf,.doc,.docx">
+      </label>
+    {% endif %}
+    <button type="submit" class="btn btn-primary">Submit Application</button>
+  </form>
+</div>
+{% endblock %}

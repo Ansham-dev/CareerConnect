@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Seeker Dashboard - CareerConnect{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="dash-head">
+    <h1>My Dashboard</h1>
+    <a href="{{ url_for('profile') }}" class="btn btn-outline">Edit Profile</a>
+  </div>
+
+  {% if not profile or not profile['resume_path'] or not profile['phone'] %}
+    <p class="alert alert-error">Your profile is incomplete. <a href="{{ url_for('profile') }}">Complete it now</a> so employers can view your details.</p>
+  {% endif %}
+
+  <h2>My Applications ({{ apps|length }})</h2>
+  {% if apps %}
+    <table class="data-table">
+      <thead>
+        <tr><th>Job</th><th>Company</th><th>Location</th><th>Applied On</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for a in apps %}
+          <tr>
+            <td>{{ a['title'] }}</td>
+            <td>{{ a['company_name'] }}</td>
+            <td>{{ a['location'] or '-' }}</td>
+            <td>{{ a['applied_on'] }}</td>
+            <td><span class="status status-{{ a['status']|lower }}">{{ a['status'] }}</span></td>
+            <td><a href="{{ url_for('job_detail', job_id=a['job_id']) }}">View</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="empty">You haven't applied to any jobs yet. <a href="{{ url_for('jobs') }}">Browse jobs</a></p>
+  {% endif %}
+</div>
+{% endblock %}

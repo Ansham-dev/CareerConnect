@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <h1>Find Your <span>Dream Job</span> Today</h1>
+  <p>CareerConnect connects job seekers with top employers. Create a profile, upload your resume and apply in minutes.</p>
+  <div class="hero-actions">
+    <a href="{{ url_for('jobs') }}" class="btn btn-primary btn-lg">Browse Jobs</a>
+    {% if not current_user %}<a href="{{ url_for('register') }}" class="btn btn-outline btn-lg">Register Now</a>{% endif %}
+  </div>
+</section>
+
+<section class="stats">
+  <div class="stat"><strong>{{ stats.jobs }}</strong><span>Open Jobs</span></div>
+  <div class="stat"><strong>{{ stats.companies }}</strong><span>Companies</span></div>
+  <div class="stat"><strong>{{ stats.seekers }}</strong><span>Job Seekers</span></div>
+</section>
+
+<section class="container">
+  <h2>Recent Job Openings</h2>
+  {% if recent %}
+    <div class="job-grid">
+      {% for job in recent %}
+        <a class="job-card" href="{{ url_for('job_detail', job_id=job['job_id']) }}">
+          <h3>{{ job['title'] }}</h3>
+          <p class="company">{{ job['company_name'] }}</p>
+          <p class="meta">
+            {% if job['location'] %}<span>{{ job['location'] }}</span>{% endif %}
+            {% if job['salary'] %}<span>{{ job['salary'] }}</span>{% endif %}
+            {% if job['category'] %}<span>{{ job['category'] }}</span>{% endif %}
+          </p>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No jobs posted yet. Check back soon!</p>
+  {% endif %}
+</section>
+{% endblock %}

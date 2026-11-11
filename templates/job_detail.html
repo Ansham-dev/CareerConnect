@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}{{ job['title'] }} - CareerConnect{% endblock %}
+{% block content %}
+<div class="container">
+  <a href="{{ url_for('jobs') }}" class="back-link">&larr; Back to jobs</a>
+  <div class="detail-card">
+    <h1>{{ job['title'] }}</h1>
+    <p class="company">{{ job['company_name'] }}
+      {% if job['website'] %} &middot; <a href="{{ job['website'] }}" target="_blank" rel="noopener">Website</a>{% endif %}
+    </p>
+    <p class="meta">
+      {% if job['location'] %}<span><strong>Location:</strong> {{ job['location'] }}</span>{% endif %}
+      {% if job['salary'] %}<span><strong>Salary:</strong> {{ job['salary'] }}</span>{% endif %}
+      {% if job['category'] %}<span><strong>Category:</strong> {{ job['category'] }}</span>{% endif %}
+      {% if job['last_date'] %}<span><strong>Apply by:</strong> {{ job['last_date'] }}</span>{% endif %}
+    </p>
+    <h2>Job Description</h2>
+    <p class="description">{{ job['description'] }}</p>
+    {% if job['company_desc'] %}
+      <h2>About the Company</h2>
+      <p>{{ job['company_desc'] }}</p>
+    {% endif %}
+
+    {% if expired %}
+      <p class="alert alert-error">The application deadline for this job has passed.</p>
+    {% elif applied %}
+      <p class="alert alert-success">You have already applied to this job.</p>
+    {% elif current_user and current_user['role'] == 'seeker' %}
+      <a href="{{ url_for('apply', job_id=job['job_id']) }}" class="btn btn-primary">Apply Now</a>
+    {% elif not current_user %}
+      <a href="{{ url_for('login') }}" class="btn btn-primary">Log in to Apply</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
