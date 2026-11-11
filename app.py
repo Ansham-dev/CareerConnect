@@ -732,7 +732,8 @@ def resume_file(filename):
     return send_from_directory(UPLOAD_DIR, filename)
 
 
+# Idempotent: creates tables + seed data once per worker startup (gunicorn / dev)
+init_db()
+
 if __name__ == "__main__":
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
-    init_db()
     app.run(debug=True)
